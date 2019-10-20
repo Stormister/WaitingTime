@@ -2,6 +2,7 @@ package com.blamejared.waitingtime.games.pong;
 
 import com.blamejared.waitingtime.CustomThread;
 import com.blamejared.waitingtime.api.Game;
+import com.blamejared.waitingtime.util.StatHandler;
 import org.lwjgl.opengl.*;
 
 import java.awt.*;
@@ -66,7 +67,7 @@ public class Pong extends Game {
     
     @Override
     public void update() {
-        int x = MouseInfo.getPointerInfo().getLocation().x;
+        //int x = MouseInfo.getPointerInfo().getLocation().x;
         int y = MouseInfo.getPointerInfo().getLocation().y;
         if(y > Display.getY() && y < Display.getY() + Display.getHeight()) {
             paddleY = canvasTop + (y - Display.getY()) - (paddleHeight);
@@ -158,12 +159,15 @@ public class Pong extends Game {
         }
         glPopMatrix();
         glPushMatrix();
-        CustomThread.setColor(0xFFFFFF);
+        String intToHexPaddle = "0x"+StatHandler.get(CustomThread.PADDLE_COLOR);
+        int hexToIntPaddle = Integer.decode(intToHexPaddle);
+        System.out.println(hexToIntPaddle);
+        CustomThread.setColor(StatHandler.get(CustomThread.PADDLE_COLOR));
         glBegin(GL_QUADS);
         CustomThread.drawBoxFast(paddleX, paddleY, paddleWidth, paddleHeight);
         
         CustomThread.drawBoxFast(paddleAIX, paddleAIY, paddleWidth, paddleHeight);
-        
+        CustomThread.setColor(StatHandler.get(CustomThread.BALL_COLOR));
         CustomThread.drawBoxFast(ballX, ballY, ballSize, ballSize);
         glEnd();
         glPopMatrix();

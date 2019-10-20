@@ -1,6 +1,7 @@
 package com.blamejared.waitingtime;
 
 import com.blamejared.waitingtime.api.Game;
+import com.blamejared.waitingtime.games.breakout.Breakout;
 import com.blamejared.waitingtime.games.pong.Pong;
 import com.blamejared.waitingtime.util.*;
 import net.minecraft.client.Minecraft;
@@ -29,6 +30,10 @@ public class CustomThread {
     
     public static StatHandler.Stat<Boolean> SHOW_TIME = new StatHandler.Stat<>("show_stats", Boolean::parseBoolean, true).saveDefault();
     public static StatHandler.Stat<Boolean> SHOW_START_TIMES = new StatHandler.Stat<>("show_start_times", Boolean::parseBoolean, true).saveDefault();
+    public static StatHandler.Stat<Boolean> DIM_BACKGROUND = new StatHandler.Stat<>("dim_background", Boolean::parseBoolean, true).saveDefault();
+    public static StatHandler.Stat<Integer> GAME_TYPE = new StatHandler.Stat<>("game_type", Integer::parseInt, 0).saveDefault();
+    public static StatHandler.Stat<Integer> PADDLE_COLOR = new StatHandler.Stat<>("paddle_color", Integer::decode, 0x111111).saveDefault();
+    public static StatHandler.Stat<Integer> BALL_COLOR = new StatHandler.Stat<>("ball_color", Integer::decode, 0x111111).saveDefault();
     public static StatHandler.Stat<Integer> LOAD_TIME = new StatHandler.Stat<>("load_time", Integer::parseInt, 0);
     public static StatHandler.Stat<Integer> START_TIMES = new StatHandler.Stat<>("start_times", Integer::parseInt, 0);
     
@@ -160,7 +165,16 @@ public class CustomThread {
                 int right = 320 + w / 2;
                 int bottom = 240 + h / 2;
                 int top = 240 - h / 2;
-                game = new Pong();
+                switch(StatHandler.get(GAME_TYPE)){
+                    case 0:
+                        game = new Pong();
+                        break;
+                    case 1:
+                        game = new Breakout();
+                        break;
+                    default:
+                        game = new Pong();
+                }
                 game.start(left, right, top, bottom);
                 lastFPS = getTime();
                 boolean repeatEventsEnabled = Keyboard.areRepeatEventsEnabled();
